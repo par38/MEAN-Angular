@@ -12,6 +12,7 @@ import {EmployeeModel } from '../models/employee.model'
   styleUrls: ['./employee.component.scss'], 
   providers: [ EmployeeService ]
 })
+  
 export class EmployeeComponent implements OnInit {
 
   constructor( private employeeService: EmployeeService ) { }
@@ -41,14 +42,32 @@ export class EmployeeComponent implements OnInit {
     })
   }
 
-  
-  // onDelete(_id: string, form: NgForm) {
-  //   this.employeeService.deleteEmployee(_id)
-  //   // this.resetForm();
-  //   // this.showEmployeesList()
-  // }
+  onEdit(emp: EmployeeModel) {
+    this.employeeService.selectedEmployee = emp
+  }
+ 
+  // // ++++ FONCTIONNE, mais ne fonctionne pas sans .subscribe()
+  onSubmit(form: NgForm) {
+    if (form.value._id == '') {
+      this.employeeService.postEmployee(form.value).subscribe(() => {
+        this.showEmployeesList();
+        this.resetForm(form);
+      })
+    } else {
+      this.employeeService.putEmployee(form.value).subscribe(() => {
+        this.resetForm();
+        this.showEmployeesList()
+      })
+    }
+  }
 
-  // TUTO
+  onDelete(_id: string) {
+    this.employeeService.deleteEmployee(_id).subscribe(() => {
+      this.showEmployeesList()
+    })
+  }
+
+  // // TUTO
   // onDelete(_id: string, form: NgForm) {
   //   if (confirm('Are you sure to delete this record ?') == true) {
   //     this.employeeService.deleteEmployee(_id).subscribe((res) => {
@@ -57,34 +76,6 @@ export class EmployeeComponent implements OnInit {
   //       // M.toast({ html: 'Deleted successfully', classes: 'rounded' });
   //     });
   //   }
-  // }
-
-
-  // onSubmit(formContent: NgForm) {
-  //   this.employeeService.postEmployee(formContent.value)
-  // }
-
-  // TUTO
-  // onSubmit(form: NgForm) {
-  //   // if (form.value._id == "") {
-  //   this.employeeService.postEmployee(form.value).subscribe(
-  //     data => {
-  //       this.showEmployeesList()
-  //       return true
-  //     },
-  //     error => {
-  //       console.error("Error saving new employee")
-  //       return throwError(error)
-  //     }
-  //   )
-  //   // }
-  //   // else {
-  //   //   this.employeeService.putEmployee(form.value).subscribe((res) => {
-  //   //     this.resetForm(form);
-  //   //     this.showEmployeesList();
-  //   //     // M.toast({ html: 'Updated successfully', classes: 'rounded' });
-  //   //   });
-  //   // }
   // }
 
 }
